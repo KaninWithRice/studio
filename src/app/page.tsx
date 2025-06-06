@@ -1,6 +1,7 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Utensils, ShoppingCart, ClipboardList, Settings } from 'lucide-react';
+import { Utensils, ShoppingCart, ClipboardList } from 'lucide-react'; // Removed Settings icon
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -14,7 +15,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-4xl w-full">
+      <div className="grid md:grid-cols-2 gap-8 max-w-4xl w-full"> {/* Changed grid-cols-3 to grid-cols-2 */}
         <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
@@ -45,20 +46,7 @@ export default function HomePage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline">
-              <Settings className="h-6 w-6 text-primary" />
-              Admin Panel
-            </CardTitle>
-            <CardDescription>Manage the menu by uploading an Excel file.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild className="w-full">
-              <Link href="/admin/menu-management">Menu Management</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Admin Panel Card Removed */}
       </div>
     </div>
   );

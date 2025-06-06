@@ -10,7 +10,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/menu', label: 'Customer Menu' },
   { href: '/kitchen/orders', label: 'Kitchen View' },
-  { href: '/admin/menu-management', label: 'Admin Upload' },
+  // { href: '/admin/menu-management', label: 'Admin Upload' }, // Admin link removed
 ];
 
 export default function SiteHeader() {
