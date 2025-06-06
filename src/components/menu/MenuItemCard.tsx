@@ -33,8 +33,8 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
           <Image
             src={item.imageUrl}
             alt={item.name}
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{ objectFit: 'cover' }}
             data-ai-hint={`${item.category.toLowerCase()} food`}
           />
         </div>
