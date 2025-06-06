@@ -1,143 +1,124 @@
 import type { MenuItem, Order, OrderStatus } from '@/types';
-import { PackageSearch, Soup, Sandwich, Utensils, GlassWater, IceCream, Pizza, Drumstick } from 'lucide-react';
+import { Soup, PackageSearch, Blend, GlassWater, Egg, Leaf, Drumstick, CookingPot, Square, Circle } from 'lucide-react'; // Added CookingPot, Square, Circle
 
 export const mockCategories = [
-  { name: 'Noodles', icon: Soup },
-  { name: 'Appetizers', icon: Sandwich },
-  { name: 'Sides', icon: Pizza },
-  { name: 'Main Courses', icon: Drumstick },
+  { name: 'Base Noodles', icon: Soup },
+  { name: 'Sides', icon: PackageSearch },
+  { name: 'Sauces', icon: Blend },
   { name: 'Drinks', icon: GlassWater },
-  { name: 'Desserts', icon: IceCream },
 ];
 
 export const mockMenuItems: MenuItem[] = [
+  // Base Noodles
   {
-    id: '1',
-    name: 'Classic Ramen',
-    description: 'Rich pork broth, chashu pork, soft-boiled egg, and narutomaki.',
-    price: 12.99,
-    category: 'Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
-    icon: Soup,
-  },
-  {
-    id: '2',
-    name: 'Spicy Miso Ramen',
-    description: 'Fiery miso broth, ground pork, corn, and chili oil.',
-    price: 13.99,
-    category: 'Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
-    icon: Soup,
-  },
-  {
-    id: '3',
-    name: 'Vegetable Udon',
-    description: 'Thick udon noodles in a light dashi broth with seasonal vegetables.',
-    price: 11.99,
-    category: 'Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
-    icon: Utensils,
-  },
-  {
-    id: '4',
-    name: 'Gyoza (6 pcs)',
-    description: 'Pan-fried pork and vegetable dumplings.',
+    id: 'bn1',
+    name: 'Lucky Me! Pancit Canton Kalamansi',
+    description: 'Classic Filipino stir-fried noodles with a zesty kalamansi flavor.',
     price: 6.99,
-    category: 'Appetizers',
+    category: 'Base Noodles',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Sandwich,
+    icon: Soup,
   },
   {
-    id: '5',
-    name: 'Edamame',
-    description: 'Steamed soybeans with sea salt.',
-    price: 4.99,
-    category: 'Appetizers',
+    id: 'bn2',
+    name: 'Lucky Me! Pancit Canton Sweet and Spicy',
+    description: 'Stir-fried noodles with a delightful blend of sweet and spicy notes.',
+    price: 6.99,
+    category: 'Base Noodles',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: PackageSearch,
+    icon: Soup,
   },
   {
-    id: '6',
-    name: 'Green Tea',
-    description: 'Refreshing classic green tea.',
-    price: 2.50,
-    category: 'Drinks',
+    id: 'bn3',
+    name: 'Samyang Buldak Carbonara Ramen',
+    description: 'Spicy Korean chicken ramen with a creamy carbonara twist.',
+    price: 8.99,
+    category: 'Base Noodles',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: GlassWater,
+    icon: CookingPot, // Using a different icon for variety
   },
+
+  // Sides (Add-ons)
   {
-    id: '7',
-    name: 'Mochi Ice Cream',
-    description: 'Assorted mochi ice cream (3 pcs).',
-    price: 5.50,
-    category: 'Desserts',
-    imageUrl: 'https://placehold.co/600x400.png',
-    icon: IceCream,
-  },
-   {
-    id: '8',
-    name: 'Tempura Shrimp Udon',
-    description: 'Udon noodles with crispy tempura shrimp.',
-    price: 14.50,
-    category: 'Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
-    icon: Utensils,
-  },
-  {
-    id: '9',
-    name: 'Takoyaki',
-    description: 'Ball-shaped Japanese snack with diced octopus.',
-    price: 7.50,
-    category: 'Appetizers',
-    imageUrl: 'https://placehold.co/600x400.png',
-    icon: Sandwich,
-  },
-  {
-    id: '10',
-    name: 'Seaweed Salad',
-    description: 'Healthy and refreshing seaweed salad.',
-    price: 5.99,
+    id: 's1',
+    name: 'Egg (fried or boiled)',
+    description: 'A perfectly cooked egg, your choice of fried or boiled.',
+    price: 1.50,
     category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Pizza,
+    icon: Egg,
   },
   {
-    id: '11',
-    name: 'Chicken Karaage',
-    description: 'Japanese style fried chicken.',
-    price: 8.99,
-    category: 'Main Courses',
+    id: 's2',
+    name: 'Spam',
+    description: 'Slices of savory Spam, grilled to perfection.',
+    price: 2.50,
+    category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Drumstick,
+    icon: Square, // Representing a slice/block
   },
   {
-    id: '12',
-    name: 'Ramune Soda',
-    description: 'Classic Japanese marble soda.',
+    id: 's3',
+    name: 'Siomai',
+    description: 'Steamed pork and shrimp dumplings (4 pcs).',
+    price: 3.99,
+    category: 'Sides',
+    imageUrl: 'https://placehold.co/600x400.png',
+    icon: Circle, // Representing a dumpling
+  },
+  {
+    id: 's4',
+    name: 'Nori Seaweed',
+    description: 'Crispy sheets of roasted seaweed.',
+    price: 1.00,
+    category: 'Sides',
+    imageUrl: 'https://placehold.co/600x400.png',
+    icon: Leaf,
+  },
+
+  // Sauces (Add-ons)
+  {
+    id: 'sc1',
+    name: 'Cheese Sauce',
+    description: 'Rich and creamy cheese sauce, perfect for dipping or drizzling.',
+    price: 1.25,
+    category: 'Sauces',
+    imageUrl: 'https://placehold.co/600x400.png',
+    icon: Blend,
+  },
+
+  // Drinks
+  {
+    id: 'd1',
+    name: 'Pandan Choco',
+    description: 'A unique and refreshing chocolate drink infused with pandan.',
     price: 3.50,
     category: 'Drinks',
     imageUrl: 'https://placehold.co/600x400.png',
     icon: GlassWater,
-  }
+  },
 ];
 
+// Keeping existing mockOrders structure, but it might reference old menu items not in the new list.
+// For a clean state, orders should ideally be cleared or updated to use new menu items.
+// For now, we'll leave them, but be aware they might show "missing" items if not updated.
 export const mockOrders: Order[] = [
   {
     id: 'order1',
     items: [
-      { menuItem: mockMenuItems[0], quantity: 1 },
-      { menuItem: mockMenuItems[3], quantity: 2 },
+      { menuItem: mockMenuItems.find(item => item.id === 'bn1') || mockMenuItems[0], quantity: 1 }, // Example: use new item
+      { menuItem: mockMenuItems.find(item => item.id === 's1') || mockMenuItems[3], quantity: 2 }, // Example: use new item
     ],
     customerName: 'Alice Wonderland',
-    totalAmount: mockMenuItems[0].price + mockMenuItems[3].price * 2,
+    totalAmount: (mockMenuItems.find(item => item.id === 'bn1')?.price || 0) + (mockMenuItems.find(item => item.id === 's1')?.price || 0) * 2,
     status: 'New' as OrderStatus,
     createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
   },
   {
     id: 'order2',
-    items: [{ menuItem: mockMenuItems[1], quantity: 1 }],
+    items: [{ menuItem: mockMenuItems.find(item => item.id === 'bn2') || mockMenuItems[1], quantity: 1 }], // Example: use new item
     customerName: 'Bob The Builder',
-    totalAmount: mockMenuItems[1].price,
+    totalAmount: mockMenuItems.find(item => item.id === 'bn2')?.price || 0,
     status: 'Preparing' as OrderStatus,
     createdAt: new Date(Date.now() - 1000 * 60 * 2).toISOString(), // 2 minutes ago
   },
