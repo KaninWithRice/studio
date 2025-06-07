@@ -19,7 +19,7 @@ export const mockMenuItems: MenuItem[] = [
     description: 'Classic Filipino stir-fried noodles with a zesty kalamansi flavor.',
     price: 6.99,
     category: 'Base Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400.png', // Reverted to placeholder
     icon: Soup,
   },
   {
@@ -110,4 +110,3 @@ export const mockMenuItems: MenuItem[] = [
     icon: GlassWater,
   },
 ];
-

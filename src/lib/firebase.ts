@@ -5,12 +5,13 @@ import { getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyByhVfI0_PWMygt5y1j8LBMY7aVE6JvIjg",
-  authDomain: "noodle-hub.firebaseapp.com",
-  projectId: "noodle-hub",
-  storageBucket: "noodle-hub.firebasestorage.app",
-  messagingSenderId: "230957040823",
-  appId: "1:230957040823:web:4ecbc107c4711525c37932"
+  apiKey: "AIzaSyBGEMk2ysUax0r9AN07qvPIT5DuO81bap8",
+  authDomain: "database-81995.firebaseapp.com",
+  projectId: "database-81995",
+  storageBucket: "database-81995.firebasestorage.app",
+  messagingSenderId: "140248265002",
+  appId: "1:140248265002:web:c4833ea0679d2152666e53",
+  measurementId: "G-QWR32V5F2P"
 };
 
 // Initialize Firebase
