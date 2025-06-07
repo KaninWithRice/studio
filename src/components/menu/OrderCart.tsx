@@ -104,16 +104,23 @@ export default function OrderCart() {
       <CardContent>
         <ScrollArea className="h-[300px] pr-4 mb-4">
           {cart.map((item) => {
-            const itemTotal = (item.baseItem.price + item.selectedAddons.reduce((sum, addon) => sum + addon.price, 0)) * item.quantity;
+            // Ensure selectedAddons is an array before trying to reduce or map it
+            const safeSelectedAddons = Array.isArray(item.selectedAddons) ? item.selectedAddons : [];
+            
+            const addonsPrice = safeSelectedAddons.length > 0
+              ? safeSelectedAddons.reduce((sum, addon) => sum + addon.price, 0)
+              : 0;
+            const itemTotal = (item.baseItem.price + addonsPrice) * item.quantity;
+            
             return (
               <div key={item.id} className="mb-3 pb-3 border-b border-border last:border-b-0">
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold">{item.baseItem.name}</p>
                     <p className="text-sm text-muted-foreground">${item.baseItem.price.toFixed(2)} (base)</p>
-                    {item.selectedAddons.length > 0 && (
+                    {safeSelectedAddons.length > 0 && (
                       <ul className="list-disc list-inside pl-2 mt-1">
-                        {item.selectedAddons.map(addon => (
+                        {safeSelectedAddons.map(addon => (
                           <li key={addon.id} className="text-xs text-muted-foreground">
                             {addon.name} (+${addon.price.toFixed(2)})
                           </li>

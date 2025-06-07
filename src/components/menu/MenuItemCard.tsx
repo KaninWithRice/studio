@@ -17,14 +17,49 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
   const { toast } = useToast();
 
   const handleAddToCart = () => {
-    addToCart(item, 1);
-    toast({
-      title: `${item.name} added to cart!`,
-      description: "You can adjust quantity in your cart.",
-    });
+    if (item.category === 'Drinks') {
+      addToCart(item, [], 1); // Drinks have no selected addons
+      toast({
+        title: `${item.name} added to cart!`,
+        description: "You can adjust quantity in your cart.",
+      });
+    } else if (item.category === 'Base Noodles') {
+      // This is where we would open a customization modal
+      // For now, let's prevent adding directly and inform the user
+      toast({
+        title: `Customize ${item.name}`,
+        description: "Please select this noodle to customize with add-ons (modal coming soon!).",
+        variant: "default",
+      });
+      // Or, if we wanted to allow adding base noodle without addons directly for testing:
+      // addToCart(item, [], 1);
+      // toast({
+      //   title: `${item.name} added (without add-ons).`,
+      //   description: "Customize option coming soon.",
+      // });
+    } else if (item.category === 'Sides' || item.category === 'Sauces') {
+      toast({
+        title: `${item.name} is an add-on`,
+        description: "Please select a base noodle to add this item.",
+        variant: "default", 
+      });
+    } else {
+      // Fallback for any other category, though unlikely with current setup
+      addToCart(item, [], 1); 
+      toast({
+        title: `${item.name} added to cart!`,
+      });
+    }
   };
 
   const IconComponent = item.icon;
+
+  // Determine if the "Add to Cart" button should be shown/enabled
+  // For Base Noodles, it will eventually trigger a modal. For Drinks, it adds directly.
+  // For Sides/Sauces, direct add from card is discouraged in the new model.
+  const canDirectlyAddToCart = item.category === 'Drinks';
+  const isBaseNoodle = item.category === 'Base Noodles';
+  // Button text logic can be enhanced later based on modal flow.
 
   return (
     <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
@@ -52,8 +87,18 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
         <p className="text-lg font-semibold text-primary">${item.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleAddToCart} className="w-full">
-          <PlusCircle className="mr-2 h-5 w-5" /> Add to Cart
+        {/* For Base Noodles, this button will eventually open a modal.
+            For Drinks, it adds directly.
+            For Sides/Sauces, it's currently a toast message. Consider disabling or changing text.
+        */}
+        <Button 
+          onClick={handleAddToCart} 
+          className="w-full"
+          // Potentially disable if it's a Side/Sauce and we don't want direct add:
+          // disabled={item.category === 'Sides' || item.category === 'Sauces'}
+        >
+          <PlusCircle className="mr-2 h-5 w-5" />
+          {isBaseNoodle ? "Customize" : (canDirectlyAddToCart ? "Add to Cart" : "View Options")}
         </Button>
       </CardFooter>
     </Card>
