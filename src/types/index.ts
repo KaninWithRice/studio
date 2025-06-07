@@ -7,39 +7,47 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: string;
+  category: 'Base Noodles' | 'Sides' | 'Sauces' | 'Drinks'; // More specific categories
   imageUrl?: string;
-  icon?: LucideIcon; // Icon is optional, used for display in menu, not stored in order items
+  icon?: LucideIcon;
 }
 
+// Represents an item in the shopping cart.
+// A cart item consists of a base noodle and any selected add-ons (sides/sauces).
+// Drinks will be a CartItem with a baseItem of category 'Drinks' and empty selectedAddons.
 export interface CartItem {
-  menuItem: MenuItem; // Client-side cart uses the full MenuItem
+  id: string; // Unique identifier for this specific cart entry
+  baseItem: MenuItem;
+  selectedAddons: MenuItem[]; // Array of selected sides and sauces for this base item
   quantity: number;
 }
 
 export type OrderStatus = 'New' | 'Preparing' | 'Ready' | 'Served' | 'Cancelled';
 
-// This is the structure of an Order object as used throughout the application,
-// especially when displaying order details.
+// Structure for an Order object used in the application.
 export interface Order {
-  id: string;
-  items: CartItem[]; // When orders are fetched, menuItem.icon will be undefined, which is fine
+  id: string; // Firestore document ID
+  items: CartItem[]; // Uses the new CartItem structure
   customerName: string;
   totalAmount: number;
   status: OrderStatus;
-  createdAt: Date; // JS Date object in the app, converted from Firestore Timestamp
+  createdAt: Date; // JS Date object
 }
 
-// Defines the structure of a cart item specifically for Firestore storage.
-// MenuItem is stripped of non-serializable fields like 'icon'.
+// Firestore-specific structure for a MenuItem (omitting non-serializable 'icon').
+type MenuItemInFirestore = Omit<MenuItem, 'icon'>;
+
+// Firestore-specific structure for a CartItem.
 interface CartItemInFirestore {
-  menuItem: Omit<MenuItem, 'icon'>; // Ensures only serializable parts of MenuItem are stored
+  id: string; // Retain the unique cart entry ID if needed, or it can be implicit by array index
+  baseItem: MenuItemInFirestore;
+  selectedAddons: MenuItemInFirestore[];
   quantity: number;
 }
 
-// This type represents the data structure for an order as it is written to Firestore.
+// Data structure for an order as written to Firestore.
 export interface OrderFirestoreData {
-  items: CartItemInFirestore[]; // Uses the Firestore-specific cart item structure
+  items: CartItemInFirestore[];
   customerName: string;
   totalAmount: number;
   status: OrderStatus;

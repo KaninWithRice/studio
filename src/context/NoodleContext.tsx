@@ -1,12 +1,13 @@
+
 "use client";
 import { db } from "@/lib/firebase";
 import { mockMenuItems } from "@/lib/mockData";
 import type {
   CartItem,
-  CartItemInFirestore,
   MenuItem,
   OrderFirestoreData,
   OrderStatus,
+  CartItemInFirestore, // Import the new type
 } from "@/types";
 import {
   addDoc,
@@ -18,17 +19,18 @@ import {
 } from "firebase/firestore";
 import type { ReactNode } from "react";
 import React, { createContext, useCallback, useState } from "react";
+import { v4 as uuidv4 } from 'uuid'; // For generating unique cart item IDs
 
 interface NoodleContextType {
   menuItems: MenuItem[];
   setMenuItems: (items: MenuItem[]) => void;
   cart: CartItem[];
-  addToCart: (item: MenuItem, quantity?: number) => void;
-  removeFromCart: (itemId: string) => void;
-  updateCartItemQuantity: (itemId: string, quantity: number) => void;
+  addToCart: (baseItem: MenuItem, selectedAddons: MenuItem[], quantity?: number) => void;
+  removeFromCart: (cartItemId: string) => void;
+  updateCartItemQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
-  addOrder: (customerName: string) => Promise<string | null>; // Returns new order ID or null
+  addOrder: (customerName: string) => Promise<string | null>;
   updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
   getCategoryIcon: (categoryName: string) => React.ElementType | undefined;
 }
@@ -49,38 +51,36 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
     setMenuItemsState(items);
   };
 
-  const addToCart = useCallback((item: MenuItem, quantity: number = 1) => {
+  const addToCart = useCallback((baseItem: MenuItem, selectedAddons: MenuItem[], quantity: number = 1) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find(
-        (cartItem) => cartItem.menuItem.id === item.id
-      );
-      if (existingItem) {
-        return prevCart.map((cartItem) =>
-          cartItem.menuItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + quantity }
-            : cartItem
-        );
-      }
-      return [...prevCart, { menuItem: item, quantity }];
+      // For simplicity, always add as a new item.
+      // Future enhancement: check if an identical item (base + exact addons) exists and increment quantity.
+      const newCartItem: CartItem = {
+        id: uuidv4(), // Generate a unique ID for this cart entry
+        baseItem,
+        selectedAddons,
+        quantity,
+      };
+      return [...prevCart, newCartItem];
     });
   }, []);
 
-  const removeFromCart = useCallback((itemId: string) => {
+  const removeFromCart = useCallback((cartItemId: string) => {
     setCart((prevCart) =>
-      prevCart.filter((item) => item.menuItem.id !== itemId)
+      prevCart.filter((item) => item.id !== cartItemId)
     );
   }, []);
 
   const updateCartItemQuantity = useCallback(
-    (itemId: string, quantity: number) => {
+    (cartItemId: string, quantity: number) => {
       setCart((prevCart) =>
         prevCart
           .map((item) =>
-            item.menuItem.id === itemId
-              ? { ...item, quantity: Math.max(0, quantity) }
+            item.id === cartItemId
+              ? { ...item, quantity: Math.max(0, quantity) } // Prevent negative quantity
               : item
           )
-          .filter((item) => item.quantity > 0)
+          .filter((item) => item.quantity > 0) // Remove if quantity is 0
       );
     },
     []
@@ -92,10 +92,12 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
   }, []);
 
   const getCartTotal = useCallback(() => {
-    return cart.reduce(
-      (total, item) => total + item.menuItem.price * item.quantity,
-      0
-    );
+    return cart.reduce((total, cartItem) => {
+      const basePrice = cartItem.baseItem.price;
+      const addonsPrice = cartItem.selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
+      const itemTotal = (basePrice + addonsPrice) * cartItem.quantity;
+      return total + itemTotal;
+    }, 0);
   }, [cart]);
 
   const addOrder = useCallback(
@@ -108,16 +110,24 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
 
       const newOrderData: OrderFirestoreData = {
         items: cart.map((cartItem): CartItemInFirestore => {
-          const { icon, ...serializableMenuItem } = cartItem.menuItem;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { icon, ...serializableBaseItem } = cartItem.baseItem;
+          const serializableAddons = cartItem.selectedAddons.map(addon => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { icon: addonIcon, ...serializableAddonItem } = addon;
+            return serializableAddonItem;
+          });
           return {
-            menuItem: serializableMenuItem,
+            id: cartItem.id,
+            baseItem: serializableBaseItem,
+            selectedAddons: serializableAddons,
             quantity: cartItem.quantity,
           };
         }),
         customerName,
         totalAmount: getCartTotal(),
         status: "New",
-        createdAt: serverTimestamp(),
+        createdAt: serverTimestamp() as Timestamp, // Ensure correct type
       };
 
       console.log(
@@ -186,6 +196,8 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
 
   const getCategoryIcon = useCallback(
     (categoryName: string): React.ElementType | undefined => {
+      // This might need adjustment based on how categories are handled now.
+      // For now, it attempts to find an icon from any item in that category.
       const itemInCategory = menuItems.find(
         (item) => item.category === categoryName
       );

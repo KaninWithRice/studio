@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
@@ -5,8 +6,8 @@ import { NoodleProvider } from '@/context/NoodleContext';
 import SiteHeader from '@/components/common/SiteHeader';
 
 export const metadata: Metadata = {
-  title: 'Noodle Hub',
-  description: 'Order your favorite noodles!',
+  title: "Sippin' & Slurpin'",
+  description: 'Order your favorite noodles and drinks!',
 };
 
 export default function RootLayout({

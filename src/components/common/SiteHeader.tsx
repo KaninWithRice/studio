@@ -10,7 +10,6 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/menu', label: 'Customer Menu' },
   { href: '/kitchen/orders', label: 'Kitchen View' },
-  // { href: '/admin/menu-management', label: 'Admin Upload' }, // Admin link removed
 ];
 
 export default function SiteHeader() {
@@ -21,7 +20,7 @@ export default function SiteHeader() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-primary-foreground hover:text-accent-foreground transition-colors">
           <Utensils className="h-8 w-8" />
-          <h1 className="text-2xl font-headline font-semibold">Noodle Hub</h1>
+          <h1 className="text-2xl font-headline font-semibold">Sippin' & Slurpin'</h1>
         </Link>
         <nav className="flex items-center gap-2">
           {navLinks.map((link) => (

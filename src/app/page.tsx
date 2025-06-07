@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Utensils, ShoppingCart, ClipboardList } from 'lucide-react'; // Removed Settings icon
+import { Utensils, ShoppingCart, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -9,13 +9,13 @@ export default function HomePage() {
     <div className="flex flex-col items-center justify-center py-12">
       <div className="text-center mb-12">
         <Utensils className="mx-auto h-24 w-24 text-primary mb-4" />
-        <h1 className="text-5xl font-headline font-bold text-primary mb-2">Welcome to Noodle Hub!</h1>
+        <h1 className="text-5xl font-headline font-bold text-primary mb-2">Welcome to Sippin' & Slurpin'!</h1>
         <p className="text-xl text-foreground">
-          Your one-stop shop for delicious noodles and more.
+          Your one-stop shop for delicious noodles, drinks, and more.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl w-full"> {/* Changed grid-cols-3 to grid-cols-2 */}
+      <div className="grid md:grid-cols-2 gap-8 max-w-4xl w-full">
         <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
@@ -45,8 +45,6 @@ export default function HomePage() {
             </Button>
           </CardContent>
         </Card>
-
-        {/* Admin Panel Card Removed */}
       </div>
     </div>
   );
