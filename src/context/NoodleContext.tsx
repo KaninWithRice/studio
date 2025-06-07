@@ -71,13 +71,22 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
 
   const addOrder = useCallback(async (customerName: string): Promise<string | null> => {
     if (cart.length === 0) return null;
+
     const newOrderData: OrderFirestoreData = {
-      items: [...cart],
+      items: cart.map(cartItem => {
+        // Create a serializable version of menuItem, omitting the 'icon'
+        const { icon, ...serializableMenuItem } = cartItem.menuItem;
+        return {
+          menuItem: serializableMenuItem,
+          quantity: cartItem.quantity,
+        };
+      }),
       customerName,
       totalAmount: getCartTotal(),
       status: 'New',
       createdAt: Timestamp.fromDate(new Date()), // Use Firestore Timestamp
     };
+
     try {
       const docRef = await addDoc(collection(db, 'orders'), newOrderData);
       clearCart();
