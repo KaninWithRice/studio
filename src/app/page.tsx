@@ -1,14 +1,21 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Utensils, ShoppingCart, ClipboardList } from 'lucide-react';
+import { ShoppingCart, ClipboardList } from 'lucide-react'; // Utensils icon is no longer needed here
 import Link from 'next/link';
+import Image from 'next/image'; // Import next/image
 
 export default function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center py-12">
       <div className="text-center mb-12">
-        <Utensils className="mx-auto h-24 w-24 text-primary mb-4" />
+        <Image
+          src="https://i.postimg.cc/gkQHSskS/491217354-1444421803583279-4943638660982686923-n-removebg-preview.png"
+          alt="Sippin' & Slurpin' Logo"
+          width={96} // Using a slightly larger size for the home page hero
+          height={96}
+          className="mx-auto h-24 w-24 text-primary mb-4" // Retaining size classes for layout consistency, width/height props handle optimization
+        />
         <h1 className="text-5xl font-headline font-bold text-primary mb-2">Welcome to Sippin' & Slurpin'!</h1>
         <p className="text-xl text-foreground">
           Your one-stop shop for delicious noodles, drinks, and more.
