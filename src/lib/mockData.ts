@@ -28,7 +28,7 @@ export const mockMenuItems: MenuItem[] = [
     description: 'Stir-fried noodles with a delightful blend of sweet and spicy notes.',
     price: 6.99,
     category: 'Base Noodles',
-    imageUrl: 'https://i.postimg.cc/yNqndPMg/494819079-576854098797946-8289035597663068211-n.png',
+    imageUrl: 'https://i.postimg.cc/xTGn1xJh/494825430-631164829981102-8060055739963445748-n-1.png',
     icon: Soup,
   },
   {
@@ -37,7 +37,7 @@ export const mockMenuItems: MenuItem[] = [
     description: 'Spicy Korean chicken ramen with a creamy twist.',
     price: 8.99,
     category: 'Base Noodles',
-    imageUrl: 'https://i.postimg.cc/W4M8JZV9/494825369-1775014180030276-2997009243696963383-n.png',
+    imageUrl: 'https://i.postimg.cc/KzTCsjtw/494862838-1966220937517772-2580075167850733316-n.png',
     icon: CookingPot,
   },
 
