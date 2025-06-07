@@ -1,9 +1,11 @@
 
 "use client";
 import type { ReactNode } from 'react';
-import React, { createContext, useState, useCallback, useEffect } from 'react';
-import type { MenuItem, CartItem, Order, OrderStatus } from '@/types';
-import { mockMenuItems, mockOrders } from '@/lib/mockData'; // Default mock data
+import React, { createContext, useState, useCallback } from 'react';
+import type { MenuItem, CartItem, Order, OrderStatus, OrderFirestoreData } from '@/types';
+import { mockMenuItems } from '@/lib/mockData';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
 
 interface NoodleContextType {
   menuItems: MenuItem[];
@@ -14,9 +16,8 @@ interface NoodleContextType {
   updateCartItemQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
-  orders: Order[];
-  addOrder: (customerName: string) => Order | null;
-  updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+  addOrder: (customerName: string) => Promise<string | null>; // Returns new order ID or null
+  updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
   getCategoryIcon: (categoryName: string) => React.ElementType | undefined;
 }
 
@@ -27,15 +28,8 @@ interface NoodleProviderProps {
 }
 
 export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
-  const [menuItems, setMenuItemsState] = useState<MenuItem[]>([]);
+  const [menuItems, setMenuItemsState] = useState<MenuItem[]>(mockMenuItems);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [orders, setOrdersState] = useState<Order[]>([]);
-
-  useEffect(() => {
-    // Initialize with mock data on client mount
-    setMenuItemsState(mockMenuItems);
-    setOrdersState(mockOrders);
-  }, []);
 
   const setMenuItems = (items: MenuItem[]) => {
     setMenuItemsState(items);
@@ -63,7 +57,7 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.menuItem.id === itemId ? { ...item, quantity: Math.max(0, quantity) } : item
-      ).filter(item => item.quantity > 0) // Remove if quantity is 0
+      ).filter(item => item.quantity > 0)
     );
   }, []);
 
@@ -75,34 +69,38 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
     return cart.reduce((total, item) => total + item.menuItem.price * item.quantity, 0);
   }, [cart]);
 
-  const addOrder = useCallback((customerName: string): Order | null => {
+  const addOrder = useCallback(async (customerName: string): Promise<string | null> => {
     if (cart.length === 0) return null;
-    const newOrder: Order = {
-      id: `order-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+    const newOrderData: OrderFirestoreData = {
       items: [...cart],
       customerName,
       totalAmount: getCartTotal(),
       status: 'New',
-      createdAt: new Date().toISOString(),
+      createdAt: Timestamp.fromDate(new Date()), // Use Firestore Timestamp
     };
-    setOrdersState((prevOrders) => [newOrder, ...prevOrders]);
-    clearCart();
-    return newOrder;
+    try {
+      const docRef = await addDoc(collection(db, 'orders'), newOrderData);
+      clearCart();
+      return docRef.id; // Return the ID of the newly created document
+    } catch (error) {
+      console.error("Error adding order to Firestore: ", error);
+      return null;
+    }
   }, [cart, clearCart, getCartTotal]);
 
-  const updateOrderStatus = useCallback((orderId: string, status: OrderStatus) => {
-    setOrdersState((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status } : order
-      )
-    );
+  const updateOrderStatus = useCallback(async (orderId: string, status: OrderStatus) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, { status });
+    } catch (error) {
+      console.error("Error updating order status in Firestore: ", error);
+    }
   }, []);
   
   const getCategoryIcon = useCallback((categoryName: string): React.ElementType | undefined => {
-    const itemInCateogry = menuItems.find(item => item.category === categoryName);
-    return itemInCateogry?.icon;
+    const itemInCategory = menuItems.find(item => item.category === categoryName);
+    return itemInCategory?.icon;
   }, [menuItems]);
-
 
   return (
     <NoodleContext.Provider
@@ -115,7 +113,6 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
         updateCartItemQuantity,
         clearCart,
         getCartTotal,
-        orders,
         addOrder,
         updateOrderStatus,
         getCategoryIcon,

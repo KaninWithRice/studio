@@ -14,9 +14,10 @@ import { ShoppingCart, Trash2, MinusCircle, PlusCircle, XCircle } from 'lucide-r
 export default function OrderCart() {
   const { cart, removeFromCart, updateCartItemQuantity, getCartTotal, addOrder, clearCart } = useNoodleContext();
   const [customerName, setCustomerName] = useState('');
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const { toast } = useToast();
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!customerName.trim()) {
       toast({
         title: "Customer Name Required",
@@ -33,17 +34,27 @@ export default function OrderCart() {
       });
       return;
     }
-    const newOrder = addOrder(customerName);
-    if (newOrder) {
+    setIsPlacingOrder(true);
+    const newOrderId = await addOrder(customerName);
+    setIsPlacingOrder(false);
+
+    if (newOrderId) {
       toast({
         title: "Order Placed!",
-        description: `Thank you, ${customerName}! Your order #${newOrder.id.slice(-5)} has been placed.`,
+        description: `Thank you, ${customerName}! Your order #${newOrderId.slice(-5)} has been placed.`,
       });
       setCustomerName('');
+      // Cart is cleared by addOrder in context
+    } else {
+      toast({
+        title: "Order Failed",
+        description: "There was an issue placing your order. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !isPlacingOrder) { // Ensure cart doesn't disappear while order is processing
     return (
       <Card className="sticky top-24 shadow-lg">
         <CardHeader>
@@ -64,7 +75,7 @@ export default function OrderCart() {
             <ShoppingCart className="h-6 w-6" /> Your Cart
           </div>
           {cart.length > 0 && (
-            <Button variant="outline" size="sm" onClick={clearCart} className="text-destructive border-destructive hover:bg-destructive/10">
+            <Button variant="outline" size="sm" onClick={clearCart} className="text-destructive border-destructive hover:bg-destructive/10" disabled={isPlacingOrder}>
               <XCircle className="mr-2 h-4 w-4" /> Clear Cart
             </Button>
           )}
@@ -80,12 +91,12 @@ export default function OrderCart() {
                   <p className="font-semibold">{item.menuItem.name}</p>
                   <p className="text-sm text-muted-foreground">${item.menuItem.price.toFixed(2)} each</p>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.menuItem.id)} className="text-destructive hover:text-destructive h-8 w-8">
+                <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.menuItem.id)} className="text-destructive hover:text-destructive h-8 w-8" disabled={isPlacingOrder}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.menuItem.id, item.quantity - 1)} className="h-7 w-7">
+                <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.menuItem.id, item.quantity - 1)} className="h-7 w-7" disabled={isPlacingOrder}>
                   <MinusCircle className="h-4 w-4" />
                 </Button>
                 <Input
@@ -94,14 +105,18 @@ export default function OrderCart() {
                   onChange={(e) => updateCartItemQuantity(item.menuItem.id, parseInt(e.target.value) || 0)}
                   className="w-16 h-7 text-center px-1"
                   min="0"
+                  disabled={isPlacingOrder}
                 />
-                <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.menuItem.id, item.quantity + 1)} className="h-7 w-7">
+                <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.menuItem.id, item.quantity + 1)} className="h-7 w-7" disabled={isPlacingOrder}>
                   <PlusCircle className="h-4 w-4" />
                 </Button>
                 <p className="ml-auto font-medium">${(item.menuItem.price * item.quantity).toFixed(2)}</p>
               </div>
             </div>
           ))}
+          {cart.length === 0 && isPlacingOrder && (
+            <p className="text-muted-foreground text-center">Placing your order...</p>
+          )}
         </ScrollArea>
         <Separator className="my-4" />
         <div className="space-y-2">
@@ -112,6 +127,7 @@ export default function OrderCart() {
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             className="bg-background"
+            disabled={isPlacingOrder}
           />
         </div>
       </CardContent>
@@ -120,8 +136,8 @@ export default function OrderCart() {
           <span>Total:</span>
           <span className="text-primary">${getCartTotal().toFixed(2)}</span>
         </div>
-        <Button onClick={handlePlaceOrder} className="w-full" size="lg" disabled={!customerName.trim()}>
-          Place Order
+        <Button onClick={handlePlaceOrder} className="w-full" size="lg" disabled={!customerName.trim() || cart.length === 0 || isPlacingOrder}>
+          {isPlacingOrder ? 'Placing Order...' : 'Place Order'}
         </Button>
       </CardFooter>
     </Card>

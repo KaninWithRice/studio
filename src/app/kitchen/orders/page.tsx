@@ -2,9 +2,11 @@
 "use client";
 import KitchenOrderCard from '@/components/kitchen/KitchenOrderCard';
 import { useNoodleContext } from '@/hooks/useNoodleContext';
-import type { OrderStatus } from '@/types';
+import type { Order, OrderStatus } from '@/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { db } from '@/lib/firebase';
+import { collection, query, orderBy, onSnapshot, Timestamp as FirestoreTimestamp } from 'firebase/firestore';
 
 const TABS_CONFIG: { value: OrderStatus | 'All'; label: string }[] = [
   { value: 'All', label: 'All Orders' },
@@ -16,16 +18,37 @@ const TABS_CONFIG: { value: OrderStatus | 'All'; label: string }[] = [
 ];
 
 export default function KitchenOrdersPage() {
-  const { orders } = useNoodleContext();
+  const [kitchenOrders, setKitchenOrders] = useState<Order[]>([]);
   const [activeTab, setActiveTab] = useState<OrderStatus | 'All'>('All');
+  // updateOrderStatus is still available from context if needed, but orders are now managed locally
+  // const { updateOrderStatus } = useNoodleContext(); 
+
+  useEffect(() => {
+    const ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+    
+    const unsubscribe = onSnapshot(ordersQuery, (querySnapshot) => {
+      const ordersData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: (data.createdAt as FirestoreTimestamp).toDate(), // Convert Firestore Timestamp to JS Date
+        } as Order;
+      });
+      setKitchenOrders(ordersData);
+    });
+
+    return () => unsubscribe(); // Cleanup listener on component unmount
+  }, []);
 
   const filteredOrders = useMemo(() => {
-    const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    // Sorting is now handled by Firestore query, but we can re-sort if needed or rely on Firestore's order
+    // const sortedOrders = [...kitchenOrders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     if (activeTab === 'All') {
-      return sortedOrders;
+      return kitchenOrders;
     }
-    return sortedOrders.filter(order => order.status === activeTab);
-  }, [orders, activeTab]);
+    return kitchenOrders.filter(order => order.status === activeTab);
+  }, [kitchenOrders, activeTab]);
 
   return (
     <div className="container mx-auto py-8">
@@ -51,7 +74,7 @@ export default function KitchenOrdersPage() {
         </div>
       ) : (
         <p className="text-center text-muted-foreground text-lg py-10">
-          No orders match the current filter.
+          No orders match the current filter or no orders yet.
         </p>
       )}
     </div>

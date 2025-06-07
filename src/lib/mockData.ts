@@ -1,5 +1,6 @@
-import type { MenuItem, Order, OrderStatus } from '@/types';
-import { Soup, PackageSearch, Blend, GlassWater, Egg, Leaf, Drumstick, CookingPot, Square, Circle } from 'lucide-react'; // Added CookingPot, Square, Circle
+
+import type { MenuItem } from '@/types'; // Order and OrderStatus removed as mockOrders are gone
+import { Soup, PackageSearch, Blend, GlassWater, Egg, Leaf, CookingPot, Square, Circle } from 'lucide-react';
 
 export const mockCategories = [
   { name: 'Base Noodles', icon: Soup },
@@ -35,7 +36,7 @@ export const mockMenuItems: MenuItem[] = [
     price: 8.99,
     category: 'Base Noodles',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: CookingPot, // Using a different icon for variety
+    icon: CookingPot,
   },
 
   // Sides (Add-ons)
@@ -55,7 +56,7 @@ export const mockMenuItems: MenuItem[] = [
     price: 2.50,
     category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Square, // Representing a slice/block
+    icon: Square, 
   },
   {
     id: 's3',
@@ -64,7 +65,7 @@ export const mockMenuItems: MenuItem[] = [
     price: 3.99,
     category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Circle, // Representing a dumpling
+    icon: Circle, 
   },
   {
     id: 's4',
@@ -99,27 +100,4 @@ export const mockMenuItems: MenuItem[] = [
   },
 ];
 
-// Keeping existing mockOrders structure, but it might reference old menu items not in the new list.
-// For a clean state, orders should ideally be cleared or updated to use new menu items.
-// For now, we'll leave them, but be aware they might show "missing" items if not updated.
-export const mockOrders: Order[] = [
-  {
-    id: 'order1',
-    items: [
-      { menuItem: mockMenuItems.find(item => item.id === 'bn1') || mockMenuItems[0], quantity: 1 }, // Example: use new item
-      { menuItem: mockMenuItems.find(item => item.id === 's1') || mockMenuItems[3], quantity: 2 }, // Example: use new item
-    ],
-    customerName: 'Alice Wonderland',
-    totalAmount: (mockMenuItems.find(item => item.id === 'bn1')?.price || 0) + (mockMenuItems.find(item => item.id === 's1')?.price || 0) * 2,
-    status: 'New' as OrderStatus,
-    createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
-  },
-  {
-    id: 'order2',
-    items: [{ menuItem: mockMenuItems.find(item => item.id === 'bn2') || mockMenuItems[1], quantity: 1 }], // Example: use new item
-    customerName: 'Bob The Builder',
-    totalAmount: mockMenuItems.find(item => item.id === 'bn2')?.price || 0,
-    status: 'Preparing' as OrderStatus,
-    createdAt: new Date(Date.now() - 1000 * 60 * 2).toISOString(), // 2 minutes ago
-  },
-];
+// mockOrders has been removed as orders will now be fetched from Firestore.
