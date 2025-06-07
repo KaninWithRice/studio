@@ -33,11 +33,11 @@ export const mockMenuItems: MenuItem[] = [
   },
   {
     id: 'bn3',
-    name: 'Samyang Buldak Carbonara Ramen',
-    description: 'Spicy Korean chicken ramen with a creamy carbonara twist.',
+    name: 'Samyang Buldak Ramen',
+    description: 'Spicy Korean chicken ramen with a creamy twist.', // Updated description slightly
     price: 8.99,
     category: 'Base Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://i.postimg.cc/W4M8JZV9/494825369-1775014180030276-2997009243696963383-n.png',
     icon: CookingPot,
   },
 
