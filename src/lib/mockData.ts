@@ -97,7 +97,7 @@ export const mockMenuItems: MenuItem[] = [
     description: 'A refreshing cooler infused with the aromatic flavor of pandan leaves.',
     price: 3.25,
     category: 'Drinks',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://i.ibb.co/mN0sS92/pandan-cooler.jpg',
     icon: GlassWater,
   },
   {
