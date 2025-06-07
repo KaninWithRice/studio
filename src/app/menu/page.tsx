@@ -13,9 +13,18 @@ export default function MenuPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
 
+  const mainDisplayCategories = ['Base Noodles', 'Drinks'];
+
   const filteredMenuItems = useMemo(() => {
     return menuItems
-      .filter(item => selectedCategory === 'All' || item.category === selectedCategory)
+      .filter(item => {
+        // Show all items if 'All' is selected and they are main display categories,
+        // or if their category matches the selectedCategory.
+        if (selectedCategory === 'All') {
+          return mainDisplayCategories.includes(item.category);
+        }
+        return item.category === selectedCategory;
+      })
       .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [menuItems, selectedCategory, searchTerm]);
 

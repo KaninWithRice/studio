@@ -1,12 +1,14 @@
 
-import type { MenuItem } from '@/types'; // Order and OrderStatus removed as mockOrders are gone
+import type { MenuItem } from '@/types'; 
 import { Soup, PackageSearch, Blend, GlassWater, Egg, Leaf, CookingPot, Square, Circle } from 'lucide-react';
 
+// mockCategories now only defines categories intended for direct display or tabbing.
+// Sides and Sauces are still item categories but not primary display categories.
 export const mockCategories = [
   { name: 'Base Noodles', icon: Soup },
-  { name: 'Sides', icon: PackageSearch },
-  { name: 'Sauces', icon: Blend },
   { name: 'Drinks', icon: GlassWater },
+  // 'Sides' and 'Sauces' are removed from here as they are not main selectable categories for display.
+  // Their items will still be used in the CustomizeNoodleModal.
 ];
 
 export const mockMenuItems: MenuItem[] = [
@@ -39,7 +41,7 @@ export const mockMenuItems: MenuItem[] = [
     icon: CookingPot,
   },
 
-  // Sides (Add-ons)
+  // Sides (Add-ons) - These items remain for the CustomizeNoodleModal
   {
     id: 's1',
     name: 'Egg (fried or boiled)',
@@ -77,7 +79,7 @@ export const mockMenuItems: MenuItem[] = [
     icon: Leaf,
   },
 
-  // Sauces (Add-ons)
+  // Sauces (Add-ons) - These items remain for the CustomizeNoodleModal
   {
     id: 'sc1',
     name: 'Cheese Sauce',
@@ -99,5 +101,3 @@ export const mockMenuItems: MenuItem[] = [
     icon: GlassWater,
   },
 ];
-
-// mockOrders has been removed as orders will now be fetched from Firestore.
