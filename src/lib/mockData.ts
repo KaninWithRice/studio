@@ -28,7 +28,7 @@ export const mockMenuItems: MenuItem[] = [
     description: 'Stir-fried noodles with a delightful blend of sweet and spicy notes.',
     price: 6.99,
     category: 'Base Noodles',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://i.postimg.cc/yNqndPMg/494819079-576854098797946-8289035597663068211-n.png',
     icon: Soup,
   },
   {
