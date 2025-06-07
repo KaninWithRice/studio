@@ -1,3 +1,4 @@
+
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -106,7 +107,7 @@ export default function KitchenOrderCard({ order }: KitchenOrderCardProps) {
         </ul>
         <Separator className="my-2" />
         <p className="font-bold text-lg text-primary">
-          Total: ${order.totalAmount ? order.totalAmount.toFixed(2) : "0.00"}
+          Total: ₱{order.totalAmount ? order.totalAmount.toFixed(2) : "0.00"}
         </p>
       </CardContent>
       <CardFooter className="flex flex-col sm:flex-row items-center gap-2">

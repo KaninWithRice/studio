@@ -86,7 +86,7 @@ export default function CustomizeNoodleModal({
             Customize {baseNoodle.name}
           </DialogTitle>
           <DialogDescription>
-            Base Price: ${baseNoodle.price.toFixed(2)}. Select your add-ons below.
+            Base Price: ₱{baseNoodle.price.toFixed(2)}. Select your add-ons below.
           </DialogDescription>
         </DialogHeader>
 
@@ -118,7 +118,7 @@ export default function CustomizeNoodleModal({
                         {side.name}
                       </Label>
                       <span className="text-sm text-muted-foreground">
-                        +${side.price.toFixed(2)}
+                        +₱{side.price.toFixed(2)}
                       </span>
                     </div>
                   ))}
@@ -152,7 +152,7 @@ export default function CustomizeNoodleModal({
                         {sauce.name}
                       </Label>
                       <span className="text-sm text-muted-foreground">
-                        +${sauce.price.toFixed(2)}
+                        +₱{sauce.price.toFixed(2)}
                       </span>
                     </div>
                   ))}
@@ -164,7 +164,7 @@ export default function CustomizeNoodleModal({
 
         <DialogFooter className="sm:justify-between items-center pt-4 border-t border-border">
           <div className="text-xl font-bold text-primary">
-            Total: ${currentTotal.toFixed(2)}
+            Total: ₱{currentTotal.toFixed(2)}
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>

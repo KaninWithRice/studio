@@ -117,12 +117,12 @@ export default function OrderCart() {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="font-semibold">{item.baseItem.name}</p>
-                    <p className="text-sm text-muted-foreground">${item.baseItem.price.toFixed(2)} (base)</p>
+                    <p className="text-sm text-muted-foreground">₱{item.baseItem.price.toFixed(2)} (base)</p>
                     {safeSelectedAddons.length > 0 && (
                       <ul className="list-disc list-inside pl-2 mt-1">
                         {safeSelectedAddons.map(addon => (
                           <li key={addon.id} className="text-xs text-muted-foreground">
-                            {addon.name} (+${addon.price.toFixed(2)})
+                            {addon.name} (+₱{addon.price.toFixed(2)})
                           </li>
                         ))}
                       </ul>
@@ -147,7 +147,7 @@ export default function OrderCart() {
                   <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)} className="h-7 w-7" disabled={isPlacingOrder}>
                     <PlusCircle className="h-4 w-4" />
                   </Button>
-                  <p className="ml-auto font-medium">${itemTotal.toFixed(2)}</p>
+                  <p className="ml-auto font-medium">₱{itemTotal.toFixed(2)}</p>
                 </div>
               </div>
             );
@@ -172,7 +172,7 @@ export default function OrderCart() {
       <CardFooter className="flex flex-col gap-2">
         <div className="flex justify-between w-full text-xl font-bold">
           <span>Total:</span>
-          <span className="text-primary">${getCartTotal().toFixed(2)}</span>
+          <span className="text-primary">₱{getCartTotal().toFixed(2)}</span>
         </div>
         <Button onClick={handlePlaceOrder} className="w-full" size="lg" disabled={!customerName.trim() || cart.length === 0 || isPlacingOrder}>
           {isPlacingOrder ? 'Placing Order...' : 'Place Order'}

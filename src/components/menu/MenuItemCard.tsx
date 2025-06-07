@@ -87,7 +87,7 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="text-lg font-semibold text-primary">${item.price.toFixed(2)}</p>
+          <p className="text-lg font-semibold text-primary">₱{item.price.toFixed(2)}</p>
         </CardContent>
         <CardFooter>
           <Button 
