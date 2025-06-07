@@ -1,6 +1,6 @@
 
 import type { MenuItem } from '@/types';
-import { Soup, GlassWater, Egg, Leaf, CookingPot, Square, Circle, Blend } from 'lucide-react';
+import { Soup, GlassWater, Egg, Leaf, CookingPot, Square, Circle, Blend, CupSoda } from 'lucide-react'; // Added CupSoda for Bottled Water
 
 // mockCategories now only defines categories intended for direct display or tabbing.
 // Sides and Sauces are still item categories but not primary display categories.
@@ -34,7 +34,7 @@ export const mockMenuItems: MenuItem[] = [
   {
     id: 'bn3',
     name: 'Samyang Buldak Ramen',
-    description: 'Spicy Korean chicken ramen with a creamy twist.', // Updated description slightly
+    description: 'Spicy Korean chicken ramen with a creamy twist.',
     price: 8.99,
     category: 'Base Noodles',
     imageUrl: 'https://i.postimg.cc/W4M8JZV9/494825369-1775014180030276-2997009243696963383-n.png',
@@ -97,7 +97,7 @@ export const mockMenuItems: MenuItem[] = [
     description: 'A refreshing cooler infused with the aromatic flavor of pandan leaves.',
     price: 3.25,
     category: 'Drinks',
-    imageUrl: 'https://i.ibb.co/mN0sS92/pandan-cooler.jpg',
+    imageUrl: 'https://i.postimg.cc/QNnQCm58/494857294-708875265242364-971137207945955177-n.png',
     icon: GlassWater,
   },
   {
@@ -106,7 +106,16 @@ export const mockMenuItems: MenuItem[] = [
     description: 'A cool and creamy chocolate beverage, perfect for a sweet treat.',
     price: 3.75,
     category: 'Drinks',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://i.postimg.cc/brMk5Y8D/494859236-1685295855493847-6118392729639336969-n.png',
     icon: GlassWater,
+  },
+  {
+    id: 'd3',
+    name: 'Bottled Water',
+    description: 'Crisp and refreshing bottled spring water.',
+    price: 1.50,
+    category: 'Drinks',
+    imageUrl: 'https://i.postimg.cc/hvhVMQFR/494813963-1388083395571994-4303440077336902831-n.png',
+    icon: CupSoda, // Using CupSoda for bottled water, can be changed
   },
 ];
