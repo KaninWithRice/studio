@@ -42,7 +42,7 @@ export default function OrderCart() {
     setIsPlacingOrder(true);
     try {
       console.log("OrderCart: Calling addOrder for customer:", customerName);
-      const newOrderId = await addOrder(customerName); // This promise needs to resolve or reject
+      const newOrderId = await addOrder(customerName);
 
       if (newOrderId) {
         console.log("OrderCart: addOrder successful, newOrderId:", newOrderId);
@@ -51,6 +51,7 @@ export default function OrderCart() {
           description: `Thank you, ${customerName}! Your order #${newOrderId.slice(-5)} has been placed.`,
         });
         setCustomerName('');
+        // clearCart(); // clearCart is called within addOrder in context now
       } else {
         console.error("OrderCart: addOrder returned null, indicating failure in context.");
         toast({
@@ -79,7 +80,7 @@ export default function OrderCart() {
           <CardTitle className="flex items-center gap-2 font-headline"><ShoppingCart className="h-6 w-6" /> Your Cart</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">Your cart is empty. Add some delicious noodles!</p>
+          <p className="text-muted-foreground">Your cart is empty. Add some delicious items!</p>
         </CardContent>
       </Card>
     );
@@ -102,36 +103,48 @@ export default function OrderCart() {
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[300px] pr-4 mb-4">
-          {cart.map((item) => (
-            <div key={item.menuItem.id} className="mb-3 pb-3 border-b border-border last:border-b-0">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold">{item.menuItem.name}</p>
-                  <p className="text-sm text-muted-foreground">${item.menuItem.price.toFixed(2)} each</p>
+          {cart.map((item) => {
+            const itemTotal = (item.baseItem.price + item.selectedAddons.reduce((sum, addon) => sum + addon.price, 0)) * item.quantity;
+            return (
+              <div key={item.id} className="mb-3 pb-3 border-b border-border last:border-b-0">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold">{item.baseItem.name}</p>
+                    <p className="text-sm text-muted-foreground">${item.baseItem.price.toFixed(2)} (base)</p>
+                    {item.selectedAddons.length > 0 && (
+                      <ul className="list-disc list-inside pl-2 mt-1">
+                        {item.selectedAddons.map(addon => (
+                          <li key={addon.id} className="text-xs text-muted-foreground">
+                            {addon.name} (+${addon.price.toFixed(2)})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)} className="text-destructive hover:text-destructive h-8 w-8" disabled={isPlacingOrder}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.menuItem.id)} className="text-destructive hover:text-destructive h-8 w-8" disabled={isPlacingOrder}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2 mt-1">
+                  <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.id, item.quantity - 1)} className="h-7 w-7" disabled={isPlacingOrder}>
+                    <MinusCircle className="h-4 w-4" />
+                  </Button>
+                  <Input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => updateCartItemQuantity(item.id, parseInt(e.target.value) || 0)}
+                    className="w-16 h-7 text-center px-1"
+                    min="0"
+                    disabled={isPlacingOrder}
+                  />
+                  <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)} className="h-7 w-7" disabled={isPlacingOrder}>
+                    <PlusCircle className="h-4 w-4" />
+                  </Button>
+                  <p className="ml-auto font-medium">${itemTotal.toFixed(2)}</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 mt-1">
-                <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.menuItem.id, item.quantity - 1)} className="h-7 w-7" disabled={isPlacingOrder}>
-                  <MinusCircle className="h-4 w-4" />
-                </Button>
-                <Input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => updateCartItemQuantity(item.menuItem.id, parseInt(e.target.value) || 0)}
-                  className="w-16 h-7 text-center px-1"
-                  min="0"
-                  disabled={isPlacingOrder}
-                />
-                <Button variant="outline" size="icon" onClick={() => updateCartItemQuantity(item.menuItem.id, item.quantity + 1)} className="h-7 w-7" disabled={isPlacingOrder}>
-                  <PlusCircle className="h-4 w-4" />
-                </Button>
-                <p className="ml-auto font-medium">${(item.menuItem.price * item.quantity).toFixed(2)}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           {cart.length === 0 && isPlacingOrder && (
             <p className="text-muted-foreground text-center">Placing your order...</p>
           )}
