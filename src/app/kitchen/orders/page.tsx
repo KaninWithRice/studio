@@ -1,34 +1,42 @@
-
 "use client";
-import KitchenOrderCard from '@/components/kitchen/KitchenOrderCard';
-import { useNoodleContext } from '@/hooks/useNoodleContext';
-import type { Order, OrderStatus } from '@/types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState, useMemo, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { collection, query, orderBy, onSnapshot, Timestamp as FirestoreTimestamp } from 'firebase/firestore';
+import KitchenOrderCard from "@/components/kitchen/KitchenOrderCard";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { db } from "@/lib/firebase";
+import type { Order, OrderStatus } from "@/types";
+import {
+  collection,
+  Timestamp as FirestoreTimestamp,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { useEffect, useMemo, useState } from "react";
 
-const TABS_CONFIG: { value: OrderStatus | 'All'; label: string }[] = [
-  { value: 'All', label: 'All Orders' },
-  { value: 'New', label: 'New' },
-  { value: 'Preparing', label: 'Preparing' },
-  { value: 'Ready', label: 'Ready' },
-  { value: 'Served', label: 'Served' },
-  { value: 'Cancelled', label: 'Cancelled' },
+const TABS_CONFIG: { value: OrderStatus | "All"; label: string }[] = [
+  { value: "All", label: "All Orders" },
+  { value: "New", label: "New" },
+  { value: "Preparing", label: "Preparing" },
+  { value: "Ready", label: "Ready" },
+  { value: "Served", label: "Served" },
+  { value: "Cancelled", label: "Cancelled" },
 ];
 
 export default function KitchenOrdersPage() {
   const [kitchenOrders, setKitchenOrders] = useState<Order[]>([]);
-  const [activeTab, setActiveTab] = useState<OrderStatus | 'All'>('All');
+  const [activeTab, setActiveTab] = useState<OrderStatus | "All">("All");
   // updateOrderStatus is still available from context if needed, but orders are now managed locally
-  // const { updateOrderStatus } = useNoodleContext(); 
+  // const { updateOrderStatus } = useNoodleContext();
 
   useEffect(() => {
-    const ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-    
+    const ordersQuery = query(
+      collection(db, "orders"),
+      orderBy("createdAt", "desc")
+    );
+
     const unsubscribe = onSnapshot(ordersQuery, (querySnapshot) => {
-      const ordersData = querySnapshot.docs.map(doc => {
+      const ordersData = querySnapshot.docs.map((doc) => {
         const data = doc.data();
+
         return {
           id: doc.id,
           ...data,
@@ -44,10 +52,10 @@ export default function KitchenOrdersPage() {
   const filteredOrders = useMemo(() => {
     // Sorting is now handled by Firestore query, but we can re-sort if needed or rely on Firestore's order
     // const sortedOrders = [...kitchenOrders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    if (activeTab === 'All') {
+    if (activeTab === "All") {
       return kitchenOrders;
     }
-    return kitchenOrders.filter(order => order.status === activeTab);
+    return kitchenOrders.filter((order) => order.status === activeTab);
   }, [kitchenOrders, activeTab]);
 
   return (
@@ -56,10 +64,18 @@ export default function KitchenOrdersPage() {
         Kitchen Order Display
       </h1>
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as OrderStatus | 'All')} className="mb-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as OrderStatus | "All")}
+        className="mb-6"
+      >
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-          {TABS_CONFIG.map(tab => (
-            <TabsTrigger key={tab.value} value={tab.value} className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          {TABS_CONFIG.map((tab) => (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               {tab.label}
             </TabsTrigger>
           ))}
@@ -68,7 +84,7 @@ export default function KitchenOrdersPage() {
 
       {filteredOrders.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredOrders.map(order => (
+          {filteredOrders.map((order) => (
             <KitchenOrderCard key={order.id} order={order} />
           ))}
         </div>
