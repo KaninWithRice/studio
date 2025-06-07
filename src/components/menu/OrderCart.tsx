@@ -18,12 +18,14 @@ export default function OrderCart() {
   const { toast } = useToast();
 
   const handlePlaceOrder = async () => {
+    console.log("OrderCart: handlePlaceOrder triggered.");
     if (!customerName.trim()) {
       toast({
         title: "Customer Name Required",
         description: "Please enter your name to place the order.",
         variant: "destructive",
       });
+      console.warn("OrderCart: Customer name missing.");
       return;
     }
     if (cart.length === 0) {
@@ -32,22 +34,25 @@ export default function OrderCart() {
         description: "Please add items to your cart before placing an order.",
         variant: "destructive",
       });
+      console.warn("OrderCart: Cart is empty.");
       return;
     }
 
+    console.log("OrderCart: Setting isPlacingOrder to true.");
     setIsPlacingOrder(true);
     try {
-      const newOrderId = await addOrder(customerName);
+      console.log("OrderCart: Calling addOrder for customer:", customerName);
+      const newOrderId = await addOrder(customerName); // This promise needs to resolve or reject
 
       if (newOrderId) {
+        console.log("OrderCart: addOrder successful, newOrderId:", newOrderId);
         toast({
           title: "Order Placed!",
           description: `Thank you, ${customerName}! Your order #${newOrderId.slice(-5)} has been placed.`,
         });
         setCustomerName('');
-        // Cart is cleared by addOrder in context if successful
       } else {
-        // This handles the case where addOrder returns null (e.g., Firestore error caught in context)
+        console.error("OrderCart: addOrder returned null, indicating failure in context.");
         toast({
           title: "Order Failed",
           description: "There was an issue placing your order. Please try again.",
@@ -55,14 +60,14 @@ export default function OrderCart() {
         });
       }
     } catch (error) {
-      // This catch block handles unexpected errors from addOrder or other issues in the try block
-      console.error("Error placing order in OrderCart:", error);
+      console.error("OrderCart: Error caught during addOrder call:", error);
       toast({
         title: "Order Error",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
+      console.log("OrderCart: Finally block reached. Setting isPlacingOrder to false.");
       setIsPlacingOrder(false);
     }
   };

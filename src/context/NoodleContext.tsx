@@ -2,7 +2,7 @@
 "use client";
 import type { ReactNode } from 'react';
 import React, { createContext, useState, useCallback } from 'react';
-import type { MenuItem, CartItem, Order, OrderStatus, OrderFirestoreData } from '@/types';
+import type { MenuItem, CartItem, Order, OrderStatus, OrderFirestoreData, CartItemInFirestore } from '@/types';
 import { mockMenuItems } from '@/lib/mockData';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, doc, updateDoc, Timestamp } from 'firebase/firestore';
@@ -62,6 +62,7 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
   }, []);
 
   const clearCart = useCallback(() => {
+    console.log("NoodleContext: Clearing cart.");
     setCart([]);
   }, []);
 
@@ -70,11 +71,14 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
   }, [cart]);
 
   const addOrder = useCallback(async (customerName: string): Promise<string | null> => {
-    if (cart.length === 0) return null;
+    console.log("NoodleContext: addOrder called for customer:", customerName);
+    if (cart.length === 0) {
+      console.warn("NoodleContext: Attempted to add order with empty cart.");
+      return null;
+    }
 
     const newOrderData: OrderFirestoreData = {
-      items: cart.map(cartItem => {
-        // Create a serializable version of menuItem, omitting the 'icon'
+      items: cart.map((cartItem): CartItemInFirestore => {
         const { icon, ...serializableMenuItem } = cartItem.menuItem;
         return {
           menuItem: serializableMenuItem,
@@ -84,25 +88,41 @@ export const NoodleProvider: React.FC<NoodleProviderProps> = ({ children }) => {
       customerName,
       totalAmount: getCartTotal(),
       status: 'New',
-      createdAt: Timestamp.fromDate(new Date()), // Use Firestore Timestamp
+      createdAt: Timestamp.fromDate(new Date()),
     };
 
+    console.log("NoodleContext: Preparing to add document to Firestore with data:", newOrderData);
     try {
+      if (!db) {
+        console.error("NoodleContext: Firestore database (db) is not initialized!");
+        return null;
+      }
+      console.log("NoodleContext: Attempting to call addDoc for 'orders' collection...");
       const docRef = await addDoc(collection(db, 'orders'), newOrderData);
+      console.log("NoodleContext: Document successfully added to Firestore with ID:", docRef.id);
       clearCart();
-      return docRef.id; // Return the ID of the newly created document
+      return docRef.id;
     } catch (error) {
-      console.error("Error adding order to Firestore: ", error);
+      console.error("NoodleContext: Error adding order to Firestore:", error);
+      if (error instanceof Error) {
+        console.error("NoodleContext: Firestore error details:", error.message, error.stack);
+      }
       return null;
     }
   }, [cart, clearCart, getCartTotal]);
 
   const updateOrderStatus = useCallback(async (orderId: string, status: OrderStatus) => {
+    console.log(`NoodleContext: Updating order ${orderId} to status ${status}`);
     try {
+      if (!db) {
+        console.error("NoodleContext: Firestore database (db) is not initialized for updateOrderStatus!");
+        return;
+      }
       const orderRef = doc(db, 'orders', orderId);
       await updateDoc(orderRef, { status });
+      console.log(`NoodleContext: Order ${orderId} status updated successfully.`);
     } catch (error) {
-      console.error("Error updating order status in Firestore: ", error);
+      console.error(`NoodleContext: Error updating order status for ${orderId}:`, error);
     }
   }, []);
   
