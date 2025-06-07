@@ -43,9 +43,18 @@ export const mockMenuItems: MenuItem[] = [
 
   // Sides (Add-ons) - These items remain for the CustomizeNoodleModal
   {
-    id: 's1',
-    name: 'Egg (fried or boiled)',
-    description: 'A perfectly cooked egg, your choice of fried or boiled.',
+    id: 's1-fried',
+    name: 'Egg (Fried)',
+    description: 'A perfectly cooked fried egg.',
+    price: 1.50,
+    category: 'Sides',
+    imageUrl: 'https://placehold.co/600x400.png',
+    icon: Egg,
+  },
+  {
+    id: 's1-boiled',
+    name: 'Egg (Boiled)',
+    description: 'A perfectly cooked boiled egg.',
     price: 1.50,
     category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
