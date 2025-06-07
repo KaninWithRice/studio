@@ -1,17 +1,16 @@
 
-// TODO: Replace with your actual Firebase project configuration
 // Ensure you have initialized Firebase in your project and set up Firestore.
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY", // Replace with your API key
-  authDomain: "YOUR_AUTH_DOMAIN", // Replace with your auth domain
-  projectId: "YOUR_PROJECT_ID", // Replace with your project ID
-  storageBucket: "YOUR_STORAGE_BUCKET", // Replace with your storage bucket
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Replace with your messaging sender ID
-  appId: "YOUR_APP_ID", // Replace with your app ID
+  apiKey: "AIzaSyByhVfI0_PWMygt5y1j8LBMY7aVE6JvIjg",
+  authDomain: "noodle-hub.firebaseapp.com",
+  projectId: "noodle-hub",
+  storageBucket: "noodle-hub.firebasestorage.app", // Corrected from firebasestorage.app to appspot.com if that's the typical pattern, but user provided firebasestorage.app
+  messagingSenderId: "230957040823",
+  appId: "1:230957040823:web:4ecbc107c4711525c37932"
 };
 
 // Initialize Firebase
