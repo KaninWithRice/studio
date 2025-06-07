@@ -1,6 +1,6 @@
 
-import type { MenuItem } from '@/types'; 
-import { Soup, PackageSearch, Blend, GlassWater, Egg, Leaf, CookingPot, Square, Circle } from 'lucide-react';
+import type { MenuItem } from '@/types';
+import { Soup, GlassWater, Egg, Leaf, CookingPot, Square, Circle, Blend } from 'lucide-react';
 
 // mockCategories now only defines categories intended for direct display or tabbing.
 // Sides and Sauces are still item categories but not primary display categories.
@@ -58,7 +58,7 @@ export const mockMenuItems: MenuItem[] = [
     price: 2.50,
     category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Square, 
+    icon: Square,
   },
   {
     id: 's3',
@@ -67,7 +67,7 @@ export const mockMenuItems: MenuItem[] = [
     price: 3.99,
     category: 'Sides',
     imageUrl: 'https://placehold.co/600x400.png',
-    icon: Circle, 
+    icon: Circle,
   },
   {
     id: 's4',
@@ -93,11 +93,21 @@ export const mockMenuItems: MenuItem[] = [
   // Drinks
   {
     id: 'd1',
-    name: 'Pandan Choco',
-    description: 'A unique and refreshing chocolate drink infused with pandan.',
-    price: 3.50,
+    name: 'Pandan Cooler',
+    description: 'A refreshing cooler infused with the aromatic flavor of pandan leaves.',
+    price: 3.25,
+    category: 'Drinks',
+    imageUrl: 'https://placehold.co/600x400.png',
+    icon: GlassWater,
+  },
+  {
+    id: 'd2',
+    name: 'Choco Cooler',
+    description: 'A cool and creamy chocolate beverage, perfect for a sweet treat.',
+    price: 3.75,
     category: 'Drinks',
     imageUrl: 'https://placehold.co/600x400.png',
     icon: GlassWater,
   },
 ];
+
