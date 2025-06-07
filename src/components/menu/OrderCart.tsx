@@ -34,27 +34,40 @@ export default function OrderCart() {
       });
       return;
     }
-    setIsPlacingOrder(true);
-    const newOrderId = await addOrder(customerName);
-    setIsPlacingOrder(false);
 
-    if (newOrderId) {
+    setIsPlacingOrder(true);
+    try {
+      const newOrderId = await addOrder(customerName);
+
+      if (newOrderId) {
+        toast({
+          title: "Order Placed!",
+          description: `Thank you, ${customerName}! Your order #${newOrderId.slice(-5)} has been placed.`,
+        });
+        setCustomerName('');
+        // Cart is cleared by addOrder in context if successful
+      } else {
+        // This handles the case where addOrder returns null (e.g., Firestore error caught in context)
+        toast({
+          title: "Order Failed",
+          description: "There was an issue placing your order. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      // This catch block handles unexpected errors from addOrder or other issues in the try block
+      console.error("Error placing order in OrderCart:", error);
       toast({
-        title: "Order Placed!",
-        description: `Thank you, ${customerName}! Your order #${newOrderId.slice(-5)} has been placed.`,
-      });
-      setCustomerName('');
-      // Cart is cleared by addOrder in context
-    } else {
-      toast({
-        title: "Order Failed",
-        description: "There was an issue placing your order. Please try again.",
+        title: "Order Error",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
-  if (cart.length === 0 && !isPlacingOrder) { // Ensure cart doesn't disappear while order is processing
+  if (cart.length === 0 && !isPlacingOrder) {
     return (
       <Card className="sticky top-24 shadow-lg">
         <CardHeader>
